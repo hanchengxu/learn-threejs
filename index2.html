@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="robots" content="noindex">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <script type="text/"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.136.0/build/three.min.js"></script>
+
+    <title>learn three js</title>
+</head>
+<body onload="init()">
+    <canvas id="mainCanvas" width="400px" height="300px" ></canvas>
+</body>
+<script>
+    function init(){
+        //定义一个渲染器
+        let renderer = new THREE.WebGLRenderer({
+            canvas: document.getElementById('mainCanvas')
+        });
+
+        //定义一个场景
+        let scene = new THREE.Scene();
+
+        //定义一个正交投影照相机
+        let camera = new THREE.OrthographicCamera(-2, 2, 1.5, -1.5, 0, 10);
+        camera.position.set(3, -3, 5);
+        camera.lookAt(new THREE.Vector3(0, 0, 0));
+        //将camera添加到场景中
+        scene.add(camera);
+
+        //定义一个立方体
+        //API 废弃 CubeGeometry → BoxGeometry
+        let cube = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1),
+            new THREE.MeshBasicMaterial({color: 0xff0000,wireframe:true}));
+        scene.add(cube);
+
+        //进行渲染
+        renderer.render(scene, camera);
+
+    }
+</script>
+</html>
