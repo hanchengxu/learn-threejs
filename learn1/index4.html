@@ -30,7 +30,7 @@
 
         //定义一个正交投影照相机
         //left, right, top, bottom, near, far 
-        let camera = new THREE.OrthographicCamera(-15, 15, 15, -15, 0, 10);
+        let camera = new THREE.OrthographicCamera(-10, 10, 10, -10, 0.1, 100);
         camera.position.set(3, 3, 5);
         camera.lookAt(new THREE.Vector3(0, 0, 0));
         //将camera添加到场景中
@@ -47,20 +47,20 @@
         let cube2 = new THREE.Mesh( new THREE.BoxGeometry(2,2,2),
             new THREE.MeshLambertMaterial({color: 0xffffff})
         );
-        cube2.position.x=-5;
+        cube2.position.x=-0;
         scene.add(cube2);
 
         //环境光
         // var light = new THREE.AmbientLight(0xcccccc);
         //点光源
         var light = new THREE.PointLight(0xffffff, 2, 100);
-        light.position.set(10, 5, 5);
+        light.position.set(20, 10, 10);
         scene.add(light)
 
         //圆
-        // let cube = new THREE.Mesh( new THREE.SphereGeometry(3,10,10),
-        //     new THREE.MeshBasicMaterial({color: 0xff0000,wireframe:true}));
-        // scene.add(cube);
+        let cube3 = new THREE.Mesh( new THREE.SphereGeometry(3,40,10),
+            new THREE.MeshBasicMaterial({color: 0xff0000,wireframe:true}));
+        scene.add(cube3);
 
         //进行渲染
         renderer.render(scene, camera);

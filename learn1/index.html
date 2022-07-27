@@ -23,7 +23,10 @@
         //定义一个场景
         let scene = new THREE.Scene();
 
-        //定义一个相机
+        var axes = new THREE.AxesHelper(100);
+        scene.add(axes);
+
+        //定义一个相机:透视投影
         let camera = new THREE.PerspectiveCamera(45, 4 / 3, 1, 1000);
         camera.position.set(0, 0, 5);
         //将camera添加到场景中
@@ -31,7 +34,7 @@
 
         //定义一个立方体
         //API 废弃 CubeGeometry → BoxGeometry
-        let cube = new THREE.Mesh(new THREE.BoxGeometry(1, 2, 3),
+        let cube = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1),
             new THREE.MeshBasicMaterial({color: 0xff0000}));
         scene.add(cube);
 

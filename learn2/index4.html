@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>Example 01.02 - First Scene</title>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.136.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stats.js@0.17.0/build/stats.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dat.gui@0.7.7/build/dat.gui.min.js"></script>
+    <style>
+        body {
+            /* set margin to 0 and overflow to hidden, to go fullscreen */
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+
+<div id="Stats-output">
+</div>
+<!-- Div which will hold the Output -->
+<div id="WebGL-output">
+</div>
+
+<!-- Javascript code that runs our Three.js examples -->
+<script type="text/javascript">
+
+    var camera;
+    var scene;
+    var renderer;
+
+    // once everything is loaded, we run our Three.js stuff.
+    function init() {
+
+        var stats = initStats();
+
+        var devicePixelRatio = window.devicePixelRatio;
+
+        // create a scene, that will hold all our elements such as objects, cameras and lights.
+        scene = new THREE.Scene();
+
+        // create a camera, which defines where we're looking at.
+        // fov: 视场 人类180度 正常推荐60 - 90
+        // aspect:长宽比 一般为浏览器窗口的长宽比
+        // near: 近面距离 一般设置尽可能小
+        // far: 远面距离  一般设置1000，过大会影响性能
+        camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        // create a render and set the size
+        renderer = new THREE.WebGLRenderer( {antialias:true});
+        renderer.setClearColor(new THREE.Color(0xEEEEEE));
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(devicePixelRatio);
+        renderer.shadowMap.enabled = true;
+
+        // show axes in the screen
+        var axes = new THREE.AxesHelper(100);
+        // scene.add(axes);
+
+        // create the ground plane
+        var planeGeometry = new THREE.PlaneGeometry(60, 40);
+        var planeMaterial = new THREE.MeshLambertMaterial({color: 0xffffff});
+        var plane = new THREE.Mesh(planeGeometry, planeMaterial);
+        plane.receiveShadow = true;
+
+        // rotate and position the plane
+        plane.rotation.x = -0.5 * Math.PI;
+        plane.position.x = 15;
+        plane.position.y = 0;
+        plane.position.z = 0;
+
+        // add the plane to the scene
+        scene.add(plane);
+
+        let geometry = new THREE.BufferGeometry();
+
+        let vertices = new Float32Array([
+        0, 0, 0, //顶点1坐标
+        5, 0, 0, //顶点2坐标
+        0, 10, 0, //顶点3坐标
+        0, 0, 5, //顶点4坐标
+        0, 0, 10, //顶点5坐标
+        5, 0, 1, //顶点6坐标
+        ]);
+        var attribue = new THREE.BufferAttribute(vertices, 3);
+        geometry.attributes.position = attribue;
+        var material = new THREE.MeshBasicMaterial({
+            color: 0x0000ff, //三角面颜色
+            side: THREE.DoubleSide //两面可见
+        }); //材质对象
+
+        // material = new THREE.PointsMaterial({
+        //     color: 0xff0000,
+        //     size: 2.0 
+        // });
+        // material=new THREE.LineBasicMaterial({
+        //     color:0xff0000, //线条颜色
+        //     linewidth: 2
+        // });
+        // var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
+        // let mesh = new THREE.Points(geometry,material);
+        let mesh = new THREE.Line(geometry,material);
+        //  scene.add(mesh);
+
+        geometry = new THREE.BufferGeometry(); //声明一个空几何体对象
+        //类型数组创建顶点位置position数据
+        vertices = new Float32Array([
+        0, 0, 0, //顶点1坐标
+        8, 0, 0, //顶点2坐标
+        8, 8, 0, //顶点3坐标
+        0, 8, 0, //顶点6坐标
+        ]);
+        // 创建属性缓冲区对象
+        attribue = new THREE.BufferAttribute(vertices, 3); //3个为一组
+        // 设置几何体attributes属性的位置position属性
+        geometry.attributes.position = attribue
+        var normals = new Float32Array([
+        0, 0, 1, //顶点1法向量
+        0, 0, 1, //顶点2法向量
+        0, 0, 1, //顶点3法向量
+
+        0, 0, 1, //顶点4法向量
+        0, 0, 1, //顶点5法向量
+        0, 0, 1, //顶点6法向量
+        ]);
+        
+        // 设置几何体attributes属性的位置normal属性
+        geometry.attributes.normal = new THREE.BufferAttribute(normals, 3); //3个为一组,表示一个顶点的xyz坐标
+        var indexes = new Uint16Array([
+        // 0对应第1个顶点位置数据、第1个顶点法向量数据
+        // 1对应第2个顶点位置数据、第2个顶点法向量数据
+        // 索引值3个为一组，表示一个三角形的3个顶点
+        0, 1, 2,
+        0, 2, 3,
+        ])
+        geometry.index = new THREE.BufferAttribute(indexes, 1);
+        scene.add( mesh = new THREE.Mesh(geometry, material));
+        console.log(geometry);
+
+    
+
+       // add subtle ambient lighting
+       var ambiColor = "#212020";
+       var ambientLight = new THREE.AmbientLight(ambiColor);
+       scene.add(ambientLight);
+
+        // add spotlight for the shadows
+        var spotLight = new THREE.SpotLight(0xffffff);
+        spotLight.position.set(40, 40, 50);
+        spotLight.castShadow = true;
+        scene.add(spotLight);
+
+        // position and point the camera to the center of the scene
+        camera.position.x = -40;
+        camera.position.y = 10;
+        camera.position.z = 10;
+        camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+        // add the output of the renderer to the html element
+        document.getElementById("WebGL-output").appendChild(renderer.domElement);
+
+        // render the scene
+        // renderer.render(scene, camera);
+
+        var step = 0;
+
+        var controls = new function () {
+            this.x = 10;
+            this.y = 6;
+            this.z = 17;
+            this.ambientColor = ambiColor;
+        };
+
+        var gui = new dat.GUI();
+        gui.add(controls, 'x', -50, 50);
+        gui.add(controls, 'y', -50, 50);
+        gui.add(controls, 'z', -50, 50);
+        gui.addColor(controls, 'ambientColor').onChange(function (e) {
+            ambientLight.color = new THREE.Color(e);
+        });
+        render();
+
+        function render() {
+            stats.update();
+            // rotate the cube around its axes
+       
+            camera.position.x = controls.x;
+            camera.position.y = controls.y;
+            camera.position.z = controls.z;
+            camera.lookAt(new THREE.Vector3(0, 0, 0));
+           
+            // render using requestAnimationFrame
+            requestAnimationFrame(render);
+            renderer.render(scene, camera);
+        }
+
+
+        function initStats() {
+
+            var stats = new Stats();
+
+            stats.setMode(0); // 0: fps, 1: ms
+
+            // Align top-left
+            stats.domElement.style.position = 'absolute';
+            stats.domElement.style.left = '0px';
+            stats.domElement.style.top = '0px';
+
+            document.getElementById("Stats-output").appendChild(stats.domElement);
+
+            return stats;
+        }
+    }
+
+    function onResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    window.onload = init;
+
+    window.addEventListener('resize', onResize, false);
+
+</script>
+</body>
+</html>
